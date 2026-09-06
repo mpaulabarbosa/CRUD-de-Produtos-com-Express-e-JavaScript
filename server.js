@@ -88,6 +88,15 @@ const produtos = [
   }
 ]
 
+app.use(express.json())
+
+app.use((req, res, next) => {
+  console.log(new Date().toLocaleString(), req.method, req.paths)
+  next()
+})
+
+app.use(express.static('public'))
+
 app.get('/', (req, res) => {
     res.send (`Olá estranho.`)
 })
@@ -127,7 +136,7 @@ app.put('/produtos/:id', (req, res) => {
 
     const index = produtos.findIndex (prod => prod.id === id)
     if (index === -1) {
-      res.status(404).send ('Not Found')
+      return res.status(404).send ('Not Found')
     }
       produtos[index] = {
         id: id,
@@ -146,7 +155,7 @@ app.delete('/produtos/:id', (req, res) => {
 
   const index = produtos.findIndex(prod => prod.id === id)
 
-  produtos.splice(indexEncontrado, 1)
+  produtos.splice(index, 1)
   res.status(204).send('204 No Content')
 
 })
